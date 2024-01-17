@@ -11,6 +11,10 @@ export const getUserByEmail = (email) => {
   return UserSchema.findOne({ email });
 };
 
+export const getOneAdmin = (filter) => {
+  return UserSchema.findOne(filter);
+};
+
 //update
 
 //delete
@@ -18,4 +22,18 @@ export const getUserByEmail = (email) => {
 //add refreshJWT
 export const updateRefreshJWT = async (email, refreshJWT) => {
   return await UserSchema.findOneAndUpdate({ email }, { refreshJWT });
+};
+
+export const getManyStudents = () => {
+  const selectedProperties = {
+    _id: 1,
+    status: 1,
+    role: 1,
+    fName: 1,
+    lName: 1,
+    email: 1,
+    phone: 1,
+    createdAt: 1,
+  };
+  return UserSchema.find({}, selectedProperties);
 };

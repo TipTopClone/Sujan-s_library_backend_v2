@@ -1,4 +1,5 @@
 @rootAPI = http://localhost:8000/api/v1/users
+@bookAPI = http://localhost:8000/api/v1/books
 
 
 # =======admin user 
@@ -16,12 +17,53 @@ Content-Type: application/json
 }
 
 
+### login user
+POST {{rootAPI}}/login
+Content-Type: application/json
+
+{
+    "email": "sujan12@gmail.com",
+    "password": "Sujan123" 
+}
+
+
+### request new accessJWT for user
+GET {{rootAPI}}/get-accessjwt
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1amFuMTJAZ21haWwuY29tIiwiaWF0IjoxNzA0NjE0MTYwLCJleHAiOjE3MDQ2MTUwNjB9.P-BXEDb8myvIxEoLahDYJEf8SONODTI_hg9j3l6JrrI
+
+
 
 
 # =======student user 
 ### get students profile
 GET  {{rootAPI}}
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1amFuMTJAZ21haWwuY29tIiwiaWF0IjoxNzA0NjE0MTYwLCJleHAiOjE3MDQ2MTUwNjB9.P-BXEDb8myvIxEoLahDYJEf8SONODTI_hg9j3l6JrrI
 
 
 ### create new students profile
 POST   {{rootAPI}}
+
+
+# =========== book api
+
+### Get all the books
+GET {{bookAPI}}
+
+
+### Get a book
+GET {{bookAPI}}
+
+
+### post new Book
+POST  {{bookAPI}}
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1amFuMTJAZ21haWwuY29tIiwiaWF0IjoxNzA0NzA2MzkyLCJleHAiOjE3MDQ3MDcyOTJ9.ZfWKaR3uwBn-VOcMm28vekrTdkwIzk0G_LxGLS8HcRI
+
+{
+    "thumbnail": "https://m.media-amazon.com/images/I/91asIC1fRwL._SY522_.jpg",
+    "name": "Eloquent JavaScript",
+    "author": "Marijn Haverbeke",
+    "publishYear": "2018",
+    "isbn": "9837366373829928",
+    "description": "Eloquent JavaScript dives into the JavaScript language to show programmers how to write elegant, effective JavaScript code. Like any good programming book, Eloquent JavaScript begins with fundamentals--variables, control structures, functions, and data structures--then moves on to complex topics like object-oriented programming and regular expressions. This third edition introduces new features covering the 2017 version of JavaScript, such as class notation, arrow functions, iterators, async functions, template strings, and black scope. Author Marijn Haverbeke keeps the friendly tone and easy-to-follow explanations that made the original a hit, and he adds new exercises for readers to test their skills. Eloquent JavaScript will have readers fluent in the language of the web in no time, eloquently."
+}

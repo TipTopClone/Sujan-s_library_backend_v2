@@ -1,24 +1,22 @@
 import express from 'express';
-import { createUser, getUserByEmail } from '../models/user/UserModel.js';
+import {
+  createUser,
+  getManyStudents,
+  getUserByEmail,
+} from '../models/user/UserModel.js';
 import { comparePassword, hashPassword } from '../utils/bcrypt.js';
 import {
   loginValidation,
   newUserValidation,
 } from '../middlewares/joiValidation.js';
 import { signJWTs } from '../utils/jwtHelper.js';
+import {
+  adminAuth,
+  refreshAuth,
+  userAuth,
+} from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-
-router.get('/', (req, res, next) => {
-  try {
-    res.json({
-      status: 'success',
-      message: 'to do get user',
-    });
-  } catch (error) {
-    next(error);
-  }
-});
 
 router.post('/', (req, res, next) => {
   try {
@@ -61,6 +59,26 @@ router.post('/login', loginValidation, async (req, res, next) => {
   }
 });
 
+router.post('/logout', async (req, res, next) => {
+  try {
+    const { accessJWT, email } = req.body;
+    // get user by email
+
+    //remove from session table
+    accessJWT && (await deleteSession({ token: accessJWT }));
+
+    // update refresJWT to "" in user table
+    email && (await updateRefreshJWT(email, ''));
+
+    res.json({
+      status: 'success',
+      message: 'You have been loged out',
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 //this router should be private
 router.post('/admin-user', newUserValidation, async (req, res, next) => {
   try {
@@ -89,4 +107,30 @@ router.post('/admin-user', newUserValidation, async (req, res, next) => {
   }
 });
 
+router.get('/', userAuth, (req, res, next) => {
+  try {
+    res.json({
+      status: 'success',
+      message: 'Here is the user info',
+      user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/all-users', adminAuth, async (req, res, next) => {
+  try {
+    const users = await getManyStudents();
+    res.json({
+      status: 'success',
+      message: 'Here is the user info',
+      users,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/get-accessjwt', refreshAuth);
 export default router;
