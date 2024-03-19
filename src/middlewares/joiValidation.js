@@ -5,7 +5,7 @@ const SHORTSTRREQUIRED = Joi.string().max(100).required();
 const LONGSTR = Joi.string().max(500);
 const LONGSTRREQUIRED = Joi.string().max(5000).required();
 const NUMBER = Joi.number();
-const NUMBERREQUIRED = Joi.number();
+const NUMBERREQUIRED = Joi.number().required();
 
 const validationProcessor = ({ schemaObj, req, res, next }) => {
   try {
@@ -107,6 +107,20 @@ export const newBurrowValidation = (req, res, next) => {
     thumbnail: LONGSTRREQUIRED,
     userId: SHORTSTRREQUIRED,
     userName: SHORTSTRREQUIRED,
+  };
+
+  validationProcessor({ schemaObj, req, res, next });
+};
+
+// ======= Review validation
+export const newReviewValidation = (req, res, next) => {
+  const schemaObj = {
+    bookId: SHORTSTRREQUIRED,
+    bookName: SHORTSTRREQUIRED,
+    message: LONGSTRREQUIRED,
+    burrowHistoryId: SHORTSTRREQUIRED,
+    title: SHORTSTRREQUIRED,
+    rating: NUMBERREQUIRED,
   };
 
   validationProcessor({ schemaObj, req, res, next });

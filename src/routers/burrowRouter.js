@@ -16,7 +16,7 @@ router.get('/:_id?', async (req, res, next) => {
     const burrows =
       role === 'admin'
         ? await getManyBurrow({})
-        : getManyBurrow({ userId: _id });
+        : await getManyBurrow({ userId: _id });
 
     burrows.length
       ? res.json({
@@ -78,7 +78,7 @@ router.patch('/:_id', async (req, res, next) => {
       returnedDate: Date(),
     };
 
-    const result = await updateBurroww(filter, update);
+    const result = await updateBurrow(filter, update);
 
     if (result?._id) {
       //update the book

@@ -18,13 +18,29 @@ import {
 
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
+router.post('/', newUserValidation, async (req, res, next) => {
   try {
+    req.body.password = hashPassword(req.body.password);
+
+    const user = await createUser(req.body);
+
+    if (user?._id) {
+      return res.json({
+        status: 'success',
+        message:
+          'Your account has been created successfully. You may login now',
+      });
+    }
+
     res.json({
-      status: 'success',
-      message: 'to do create new user',
+      status: 'error',
+      message: 'Unable to create the user, try again later',
     });
   } catch (error) {
+    if (error.message.includes('E11000 duplicate key error collection')) {
+      error.message = 'There is already an user used this meail in our system';
+      error.errorCode = 200;
+    }
     next(error);
   }
 });
@@ -80,32 +96,37 @@ router.post('/logout', async (req, res, next) => {
 });
 
 //this router should be private
-router.post('/admin-user', newUserValidation, async (req, res, next) => {
-  try {
-    req.body.password = hashPassword(req.body.password);
-    req.body.role = 'admin';
-    console.log(req.body);
-    const user = await createUser(req.body);
+router.post(
+  '/admin-user',
+  adminAuth,
+  newUserValidation,
+  async (req, res, next) => {
+    try {
+      req.body.password = hashPassword(req.body.password);
+      req.body.role = 'admin';
+      console.log(req.body);
+      const user = await createUser(req.body);
 
-    if (user?._id) {
-      return res.json({
-        status: 'success',
-        message: 'The admin user has been created successfully',
+      if (user?._id) {
+        return res.json({
+          status: 'success',
+          message: 'The admin user has been created successfully',
+        });
+      }
+
+      res.json({
+        status: 'error',
+        message: 'Unable to create admin user, try again',
       });
+    } catch (error) {
+      if (error.message.includes('E11000 duplicate key error collection')) {
+        error.message = 'There is already a user with this email in our system';
+        error.errorCode = 200;
+      }
+      next(error);
     }
-
-    res.json({
-      status: 'error',
-      message: 'Unable to create admin user, try again',
-    });
-  } catch (error) {
-    if (error.message.includes('E11000 duplicate key error collection')) {
-      error.message = 'There is already a user with this email in our system';
-      error.errorCode = 200;
-    }
-    next(error);
   }
-});
+);
 
 router.get('/', userAuth, (req, res, next) => {
   try {

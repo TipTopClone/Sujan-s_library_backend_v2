@@ -17,6 +17,10 @@ export const getOneAdmin = (filter) => {
 
 //update
 
+export const updateUser = (filter, update) => {
+  return UserSchema.findOneAndUpdate(filter, update, { new: true });
+};
+
 //delete
 
 //add refreshJWT
